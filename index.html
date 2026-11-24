@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>XyberMed Lead Finder</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%278%27 fill=%27%230258fc%27/%3E%3Cpath d=%27M9 9l14 14M23 9L9 23%27 stroke=%27white%27 stroke-width=%273.2%27 stroke-linecap=%27round%27/%3E%3C/svg%3E">
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--mute:#64748b;--line:#e3e8f0;--brand:#0258fc;--soft:#eef3ff;--hot:#ea580c;--warm:#ca8a04;--watch:#64748b}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,"Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+:focus-visible{outline:3px solid #9bbcff;outline-offset:2px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;font-weight:600}.btn:hover{background:#f1f5f9}
+.btn.pri{background:var(--brand);border-color:var(--brand);color:#fff}.btn.pri:hover{background:#0147d1}
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;background:linear-gradient(135deg,#e6efff,#f8fbff 55%,#eaf7f1)}
+.lc{width:min(400px,92vw);background:#fff;border-radius:20px;padding:34px;box-shadow:0 24px 60px rgba(15,23,42,.10)}
+.lc h1{margin:14px 0 4px;font-size:22px}.lc p{margin:0 0 22px;color:var(--mute)}
+.lc label{display:block;font-size:13px;font-weight:600;margin:14px 0 5px}
+.lc input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfcfe}
+.lc .btn{width:100%;margin-top:20px;padding:12px}.err{color:#b42318;font-size:14px;margin-top:12px;min-height:20px}
+.logo{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--brand)}
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1180px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}.brand .logo{width:32px;height:32px;border-radius:9px}
+.meta{margin-left:auto;color:var(--mute);font-size:13px;text-align:right}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 18px 60px}
+h2.t{margin:4px 0 2px;font-size:24px}.sub{color:var(--mute);margin:0 0 18px}
+/* dashboard */
+.dash{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-align:left;box-shadow:0 1px 2px rgba(15,23,42,.04);transition:.15s}
+.kpi:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,.08)}.kpi.on{outline:2px solid var(--brand)}
+.kpi b{display:block;font-size:30px;line-height:1.1}.kpi span{font-size:13px;color:var(--mute)}.kpi i{display:block;height:4px;border-radius:4px;margin-bottom:10px;width:34px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.panel h4{margin:0 0 8px;font-size:13px;color:var(--mute);font-weight:600}
+.rg{display:grid;grid-template-columns:110px 1fr 30px;gap:8px;align-items:center;font-size:13px;border:0;background:none;width:100%;padding:3px 0;text-align:left}
+.rg .bar{height:8px;border-radius:6px;background:#e8eefc;overflow:hidden}.rg .bar u{display:block;height:100%;background:var(--brand);border-radius:6px}.rg.on{font-weight:700}
+/* toolbar */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-weight:600;display:flex;gap:7px;align-items:center}
+.tab .d{width:9px;height:9px;border-radius:50%;background:var(--c,#94a3b8)}.tab small{color:var(--mute);font-weight:600}
+.tab[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}.tab[aria-pressed=true] small{color:#cbd5e1}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.tools input[type=search]{flex:1 1 240px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.tools select{padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.opts{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:2px 2px 12px;font-size:14px;color:var(--mute)}
+.opts label{display:flex;gap:6px;align-items:center;cursor:pointer}.opts .sp{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}.seg button{border:0;background:none;padding:8px 12px;font-weight:600;color:var(--mute)}.seg button[aria-pressed=true]{background:var(--soft);color:var(--brand)}
+#status{display:none;margin:0 0 14px;padding:13px 16px;border-radius:12px;background:#fff;border:1px solid var(--line)}#status.err{background:#fff4f2;border-color:#f3b8b0;color:#8a1c12}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-right:8px}@keyframes sp{to{transform:rotate(360deg)}}
+#count{color:var(--mute);font-size:14px;margin:0 2px 10px}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--tc);border-radius:14px;padding:14px 16px;cursor:pointer;box-shadow:0 1px 2px rgba(15,23,42,.04);transition:.15s}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(15,23,42,.10)}
+.ch{display:flex;gap:8px;align-items:center}.ch .star{margin-left:auto}
+.tb{background:color-mix(in srgb,var(--tc) 12%,#fff);color:var(--tc);border-radius:7px;padding:2px 9px;font-size:12.5px;font-weight:700}
+.tier{border-radius:7px;padding:2px 9px;font-size:12.5px;font-weight:700;color:#fff}.tier.hot{background:var(--hot)}.tier.warm{background:var(--warm)}.tier.watch{background:var(--watch)}
+.star{border:0;background:none;font-size:20px;color:#b6c0d0;line-height:1;padding:2px 4px}.star.on{color:#f59e0b}
+.card h3{margin:10px 0 0;font-size:16.5px;line-height:1.3}.card .sp{margin:2px 0 0;color:var(--ink);font-weight:500}.card .loc{margin:0;color:var(--mute);font-size:13.5px}
+.chips{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.chip{background:#f1f5f9;color:#334155;border-radius:6px;padding:1px 8px;font-size:12.5px}.chip.bad{background:#fde8e6;color:#8a1c12}
+.cf{display:flex;justify-content:space-between;color:var(--mute);font-size:13px;border-top:1px solid #eef2f7;padding-top:8px}.st{color:#047857;font-weight:700}
+/* table */
+.tw{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:10px 12px;color:var(--mute);font-size:12.5px;border-bottom:1px solid var(--line);background:#fafbfd}td{padding:9px 12px;border-bottom:1px solid #f0f3f8}
+tr[data-act]{cursor:pointer}tr[data-act]:hover{background:#f7faff}
+#empty{text-align:center;padding:50px 10px;color:var(--mute)}
+/* drawer */
+#scrim{position:fixed;inset:0;background:rgba(15,23,42,.35);opacity:0;pointer-events:none;transition:.2s;z-index:30}#scrim.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:#fff;z-index:31;transform:translateX(100%);transition:.25s;overflow:auto;box-shadow:-20px 0 50px rgba(15,23,42,.12)}#drawer.on{transform:none}
+.dh{padding:18px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2}.dh h3{margin:8px 0 2px;font-size:20px;line-height:1.25}
+.ds{padding:16px 20px;border-bottom:1px solid #eef2f7}.ds h5{margin:0 0 8px;font-size:12.5px;color:var(--mute);font-weight:700;text-transform:none}
+.why{margin:0;padding-left:18px}.why li{margin:2px 0}.angle{background:var(--soft);border-left:4px solid var(--brand);border-radius:8px;padding:10px 12px}
+.pills{display:flex;gap:6px;flex-wrap:wrap}.pill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600}.pill.on{background:var(--brand);border-color:var(--brand);color:#fff}
+textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fbfcfe;resize:vertical}
+pre{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px;font:13.5px/1.5 inherit;margin:0 0 8px}
+.lnk a{margin-right:14px;color:var(--brand);font-weight:600;text-decoration:none}.lnk a:hover{text-decoration:underline}
+.x{position:absolute;right:14px;top:12px;border:0;background:#f1f5f9;border-radius:8px;width:32px;height:32px;font-size:16px}
+@media(max-width:860px){.dash{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.meta{display:none}}
+</style></head><body>
+
+<div class="login" id="login" hidden><form class="lc" id="lf" autocomplete="on">
+ <span class="logo"><svg width="22" height="22" viewBox="0 0 32 32"><path d="M9 9l14 14M23 9L9 23" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg></span>
+ <h1>XyberMed Lead Finder</h1><p>Sign in to see new private practices in New York.</p>
+ <label for="u">Username</label><input id="u" name="username" autocomplete="username" autocapitalize="none" required>
+ <label for="p">Password</label><input id="p" name="password" type="password" autocomplete="current-password" required>
+ <div class="err" id="le" role="alert"></div><button class="btn pri" type="submit">Sign in</button></form></div>
+
+<div id="app" hidden>
+ <div class="top"><div class="in"><div class="brand"><span class="logo"><svg width="18" height="18" viewBox="0 0 32 32"><path d="M9 9l14 14M23 9L9 23" stroke="#fff" stroke-width="3.6" stroke-linecap="round"/></svg></span>Lead Finder</div>
+  <div class="meta" id="fresh"></div><button class="btn" id="refresh" title="Fetch the newest records">Refresh data</button><button class="btn" id="logout">Sign out</button></div></div>
+ <main class="wrap">
+  <h2 class="t">Newly opened private practices in New York</h2><p class="sub">Independent practices, new doctors, labs and clinics that could become XyberMed clients. Hospital systems and chains are filtered out for you.</p>
+  <div id="demo" class="panel" hidden style="margin-bottom:14px;background:#fff8e1">Showing <b>sample data</b> with fictional names because live data could not load.</div>
+  <div id="status"></div>
+  <div class="dash"><div class="kpis" id="kpis"></div><div class="panel"><h4>Where the leads are (click to filter)</h4><div id="regions"></div></div></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="tools"><input id="q" type="search" placeholder="Search name, specialty, city or ZIP   ( / )" aria-label="Search">
+   <select id="days" aria-label="Time"><option value="7">Last 7 days</option><option value="14">Last 14 days</option><option value="30">Last 30 days</option><option value="90" selected>Everything available</option></select>
+   <select id="spec" aria-label="Specialty"><option value="">All specialties</option></select>
+   <select id="region" aria-label="Region"><option value="">All of New York</option></select>
+   <select id="tier" aria-label="Tier"><option value="">All tiers</option><option>Hot</option><option>Warm</option><option>Watch</option></select>
+   <select id="sort" aria-label="Sort"><option value="score">Best fit first</option><option value="new">Newest first</option></select></div>
+  <div class="opts"><label><input type="checkbox" id="indep" checked>Independent practices only</label>
+   <label><input type="checkbox" id="call">Today's call list (top 25 with a phone)</label>
+   <label><input type="checkbox" id="showall">Show filtered-out <span id="exn"></span></label><span class="sp"></span>
+   <div class="seg" id="view"><button data-v="cards" aria-pressed="true">Cards</button><button data-v="table" aria-pressed="false">Table</button></div><button class="btn" id="csv">Export CSV</button></div>
+  <div id="count" aria-live="polite"></div><div id="list"></div><div id="empty" hidden>No leads match. Try "Everything available", "All tiers", or untick "Independent practices only".</div>
+  <button class="btn" id="more" hidden style="margin:14px auto;display:block">Show more</button>
+  <p class="sub" style="font-size:12.5px;margin-top:26px">Sources: CMS NPPES weekly files and the NYS Department of Health facility registry. A new provider ID usually comes before opening and insurance enrollment, but it is not proof of an open practice. Scores are a heuristic based on xybermed.com's services. Follow Do-Not-Call, TCPA and CAN-SPAM rules.</p>
+ </main>
+ <div id="scrim"></div><aside id="drawer" aria-label="Lead details"></aside>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const TYPES={provider:['Doctor','#2563eb'],practice:['Practice','#7c3aed'],lab:['Lab','#059669'],facility:['Facility','#db2777']};
+const STATUS=['New','Contacted','Meeting booked','Won','Not a fit'];
+const SPECS=[[/cardio/i,'Cardiology'],[/urolog/i,'Urology'],[/oncolog/i,'Oncology'],[/nephro|renal|dialysis/i,'Nephrology'],[/hepat|gastro/i,'GI / Hepatology'],[/psych|behavior|mental|counsel|social work|marriage/i,'Behavioral health'],[/podiat/i,'Podiatry'],[/laborator/i,'Laboratory'],[/family|internal|pediatric|general practice|primary/i,'Primary care']];
+const TARGET=new Set(['Cardiology','Urology','Oncology','Nephrology','GI / Hepatology','Behavioral health','Podiatry','Laboratory']);
+const ANGLES={Cardiology:'Cardiology: complex E/M plus in-office diagnostics (echo, stress, ECG) is where under-coding and denials hurt most. Offer a billing audit.',Urology:'Urology: procedure coding and prior authorization drive denials. Lead with clean claims and faster payer enrollment.',Oncology:'Oncology: drug billing, J-codes and prior auth are the pain. Lead with denial management.',Nephrology:'Nephrology: Medicare-heavy, recurring-visit billing. Lead with credentialing and coding accuracy.','GI / Hepatology':'GI/hepatology: endoscopy procedure coding and ASC billing. Lead with a coding review.','Behavioral health':'Behavioral health: time-based codes, telehealth rules and slow panel enrollment. Lead with credentialing speed.',Podiatry:'Podiatry: routine foot-care coverage rules cause denials. Lead with documentation and coding support.',Laboratory:'Laboratory: very high claim volume at low dollar value. Lead with Lab Billing and denial recovery.'};
+const PITCH={lab:'New laboratory: lead with Lab Billing and payer credentialing.',provider:'Brand-new provider ID: payer credentialing is likely still open. Lead with Credentialing and the free EHR for one provider, then offer billing.',practice:'New business entity: pitch the full stack of credentialing, billing and RCM, then a free billing audit once claims start.',facility:'Newly certified site: pitch payer enrollment, billing set-up and front-office support to the operator.'};
+let L=[],S=store.get('xm-status',{}),N=store.get('xm-notes',{}),F=store.get('xm-stars',{}),view=[],shown=48,cur=null;
+const st={tab:'all',tier:'',region:'',spec:'',q:'',days:90,sort:'score',v:'cards',indep:true,showAll:false,call:false};
+const isOrg=x=>x.kind==='practice'||x.kind==='lab';
+function region(z){const p=z.slice(0,3),n=+z.slice(0,5);if(!z)return'Unknown';
+ if(['100','101','102'].includes(p))return'Manhattan';if(p==='103')return'Staten Island';if(p==='104')return'Bronx';if(p==='112')return'Brooklyn';
+ if(n===11004||n===11005||['111','113','114','116'].includes(p))return'Queens';if(['110','115','117','118','119','005'].includes(p))return'Long Island';
+ if(/^(10[5-9]|12[4-7])$/.test(p))return'Westchester & Hudson Valley';if(/^(12[0-3]|128)$/.test(p))return'Capital Region';if(/^(129|136)$/.test(p))return'North Country';
+ if(/^13[0-5]$/.test(p))return'Central NY';if(/^(137|138|139|148|149)$/.test(p))return'Southern Tier';if(/^14[4-6]$/.test(p))return'Rochester & Finger Lakes';
+ if(/^(14[0-3]|147)$/.test(p))return'Western NY';return'Other NY'}
+function prep(){const now=Date.now(),g={};
+ L.forEach(l=>{if(l.daysAgo!=null)l.date=new Date(now-l.daysAgo*864e5).toISOString().slice(0,10);
+  l.age=Math.max(0,Math.round((now-new Date(l.date+'T12:00:00'))/864e5));l.region=region(l.zip||'');
+  const sp=SPECS.find(([r])=>r.test((l.tax||'')+' '+(l.main||'')));l.spec=sp?sp[1]:'Other';
+  l.tlabel=l.kind==='provider'?(/^(207|208|204)/.test(l.tcode||'')?'Doctor':'Clinician'):TYPES[l.kind][0];
+  l.key=l.addr?l.addr.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,16)+(l.zip||''):'';if(l.key&&l.kind!=='facility')(g[l.key]=g[l.key]||[]).push(l)});
+ L.forEach(l=>{let s=0;const why=[],add=(n,t)=>{s+=n;why.push(t)},c=l.tcode||'',t=l.tax||'';
+  const mate=l.key&&l.kind!=='facility'?g[l.key].find(x=>x!==l&&isOrg(x)!==isOrg(l)):null;l.mate=mate?mate.name:'';
+  if(l.kind==='lab')add(35,'New laboratory');else if(l.kind==='practice')add(30,'New practice entity');
+  else if(l.kind==='provider'){/^(207|208|204)/.test(c)?add(25,'New physician'):/^36[34]/.test(c)?add(12,'New NP/PA'):/^(103|104|106|101)/.test(c)?add(16,'New behavioral clinician'):add(8,'New clinician')}
+  else{/Extension/.test(t)?add(12,'New clinic site'):/Diagnostic and Treatment/.test(t)?add(25,'New independent clinic'):add(8,'New facility')}
+  if(l.kind!=='lab'&&TARGET.has(l.spec))add(20,'Target specialty: '+l.spec);
+  if(l.solo)add(14,'Solo practitioner');if(l.priv)add(10,'Private-practice naming');
+  if(mate)add(15,'Doctor and practice at the same address');
+  if(l.kind==='provider'&&!l.solo&&!mate)add(-10,'Likely employed by an existing practice');
+  if((l.cluster||0)>=3&&l.kind==='provider')add(-15,'Shared address with many new clinicians');
+  if(l.age<=14)add(18,'Registered in the last 2 weeks');else if(l.age<=30)add(12,'Registered in the last 30 days');else if(l.age<=60)add(6,'Registered in the last 60 days');
+  if(l.phone)add(5,'Phone number on file');if(l.lic&&l.kind==='provider')add(3,'NY license on file');
+  l.indep=isOrg(l)||!!l.solo||!!mate||(l.kind==='facility'&&/Diagnostic and Treatment/.test(t)&&!/Extension/.test(t));
+  l.score=Math.max(0,Math.min(100,s));if(!l.indep)l.score=Math.min(l.score,69);
+  l.tier=l.score>=70?'Hot':l.score>=50?'Warm':'Watch';l.why=why;l.angle=ANGLES[l.spec]||'';l.pitch=PITCH[l.kind]})}
+const base=l=>l.age<=st.days&&(st.showAll||!l.excl)&&(!st.indep||l.indep||st.showAll);
+function vis(){const q=st.q.toLowerCase().trim();
+ let v=L.filter(l=>{
+  if(st.tab==='pipeline'){if(!(S[l.id]&&S[l.id]!=='New'))return false}else if(st.tab==='starred'){if(!F[l.id])return false}
+  else{if(st.tab!=='all'&&l.kind!==st.tab)return false;if(!base(l))return false}
+  if(st.region&&l.region!==st.region)return false;if(st.spec&&l.spec!==st.spec)return false;if(st.tier&&l.tier!==st.tier)return false;
+  if(st.call&&!(l.phone&&(S[l.id]||'New')==='New'&&l.tier!=='Watch'))return false;
+  return !q||[l.name,l.tax,l.city,l.zip,l.addr,l.cred,l.spec].join(' ').toLowerCase().includes(q)});
+ v.sort(st.sort==='new'?(a,b)=>a.age-b.age||b.score-a.score:(a,b)=>b.score-a.score||a.age-b.age);
+ return st.call?v.slice(0,25):v}
+const ago=d=>d===0?'today':d===1?'yesterday':d<60?d+' days ago':Math.round(d/30)+' months ago';
+const tcls=t=>t==='Hot'?'hot':t==='Warm'?'warm':'watch',col=l=>(TYPES[l.kind]||['','#64748b'])[1];
+const star=l=>`<button class="star${F[l.id]?' on':''}" data-act="star" data-id="${esc(l.id)}" aria-label="Star">${F[l.id]?'★':'☆'}</button>`;
+function card(l){return `<article class="card" data-act="open" data-id="${esc(l.id)}" tabindex="0" style="--tc:${col(l)}">
+ <div class="ch"><span class="tb">${l.tlabel}</span><span class="tier ${tcls(l.tier)}">${l.tier} ${l.score}</span>${star(l)}</div>
+ <h3>${esc(l.name)}${l.cred?', '+esc(l.cred):''}</h3><p class="sp">${esc(l.tax)}</p><p class="loc">${esc(l.city)}${l.zip?' · '+esc(l.zip):''} · ${esc(l.region)}</p>
+ <div class="chips">${l.why.filter(w=>!/^(Phone|NY license)/.test(w)).slice(0,3).map(w=>`<span class="chip">${esc(w)}</span>`).join('')}${l.excl?'<span class="chip bad">Filtered out</span>':''}</div>
+ <div class="cf"><span>${l.kind==='facility'?'Opened':'Registered'} ${ago(l.age)}</span><span class="st">${S[l.id]&&S[l.id]!=='New'?esc(S[l.id]):''}</span></div></article>`}
+const trow=l=>`<tr data-act="open" data-id="${esc(l.id)}" style="--tc:${col(l)}"><td>${star(l)}</td><td><span class="tier ${tcls(l.tier)}">${l.tier} ${l.score}</span></td><td><b>${esc(l.name)}</b>${l.cred?', '+esc(l.cred):''}</td><td><span class="tb">${l.tlabel}</span></td><td>${esc(l.tax)}</td><td>${esc(l.city)}</td><td>${ago(l.age)}</td><td class="st">${S[l.id]&&S[l.id]!=='New'?esc(S[l.id]):''}</td></tr>`;
+function render(){view=vis();const b=L.filter(base);
+ $('#kpis').innerHTML=[[b.filter(l=>l.tier==='Hot').length,'Hot leads','var(--hot)','Hot'],[b.filter(l=>l.tier==='Warm').length,'Warm leads','var(--warm)','Warm'],[b.filter(isOrg).length,'New practices & labs','#7c3aed','practice'],[b.length,'Qualified in total','var(--brand)','']].map(([n,t,c,k])=>`<button class="kpi${(k==='Hot'||k==='Warm')&&st.tier===k?' on':''}" data-act="kpi" data-k="${k}"><i style="background:${c}"></i><b>${n}</b><span>${t}</span></button>`).join('');
+ const rc={};b.forEach(l=>rc[l.region]=(rc[l.region]||0)+1);const top=Object.entries(rc).sort((a,c)=>c[1]-a[1]).slice(0,7),mx=top[0]?top[0][1]:1;
+ $('#regions').innerHTML=top.map(([r,n])=>`<button class="rg${st.region===r?' on':''}" data-act="region" data-r="${esc(r)}"><span>${esc(r)}</span><span class="bar"><u style="width:${n/mx*100}%"></u></span><span>${n}</span></button>`).join('')||'<span class="sub">No data</span>';
+ const T=[['all','All','#94a3b8'],['provider','Doctors & clinicians',TYPES.provider[1]],['practice','Practices',TYPES.practice[1]],['lab','Labs',TYPES.lab[1]],['facility','Facilities',TYPES.facility[1]],['starred','★ Starred'],['pipeline','My pipeline']];
+ $('#tabs').innerHTML=T.map(([k,n,c])=>`<button class="tab" data-act="tab" data-k="${k}" aria-pressed="${st.tab===k}">${c?`<span class="d" style="--c:${c}"></span>`:''}${n}<small>${k==='starred'?L.filter(l=>F[l.id]).length:k==='pipeline'?L.filter(l=>S[l.id]&&S[l.id]!=='New').length:b.filter(l=>k==='all'||l.kind===k).length}</small></button>`).join('');
+ $('#exn').textContent=`(${L.filter(l=>l.excl&&l.age<=st.days).length} hospital-run, chains, government)`;
+ $('#count').textContent=`${view.length} lead${view.length===1?'':'s'}${st.call?' on today\'s call list':''}`;
+ const part=view.slice(0,shown);
+ $('#list').innerHTML=st.v==='table'?`<div class="tw"><table><thead><tr><th></th><th>Fit</th><th>Name</th><th>Type</th><th>Specialty</th><th>City</th><th>Registered</th><th>Status</th></tr></thead><tbody>${part.map(trow).join('')}</tbody></table></div>`:`<div class="grid">${part.map(card).join('')}</div>`;
+ $('#empty').hidden=view.length>0;$('#more').hidden=view.length<=shown}
+function email(l){const f=(l.official&&l.official.name?l.official.name.split(' ')[0]:l.kind==='provider'?(l.tlabel==='Doctor'?'Dr. '+l.name.split(' ').slice(-1)[0]:l.name.split(' ')[0]):'there');
+ return `Subject: Congratulations on opening ${l.name}\n\nHi ${f},\n\nCongratulations on your new ${(l.tax||'practice').toLowerCase()} in ${l.city}. New practices often lose weeks waiting on payer enrollment and then fight avoidable denials once claims start.\n\nXyberMed handles credentialing, billing and revenue cycle management for independent practices, so you can focus on patients. ${l.angle}\n\nWould a 15-minute call this week work?\n\nBest regards,\n[Your name]\nXyberMed | www.xybermed.com`}
+function drawer(l){const o=l.official,q=encodeURIComponent;
+ return `<div class="dh" style="--tc:${col(l)}"><button class="x" data-act="close" aria-label="Close">✕</button><span class="tb">${l.tlabel}</span> <span class="tier ${tcls(l.tier)}">${l.tier} ${l.score}</span> ${star(l)}<h3>${esc(l.name)}${l.cred?', '+esc(l.cred):''}</h3><div class="sub" style="margin:0">${esc(l.tax)} · ${esc(l.city)} · ${l.kind==='facility'?'Opened':'Registered'} ${ago(l.age)}</div></div>
+ <div class="ds"><h5>Your status</h5><div class="pills">${STATUS.map(s=>`<button class="pill${(S[l.id]||'New')===s?' on':''}" data-act="status" data-s="${esc(s)}">${esc(s)}</button>`).join('')}</div></div>
+ <div class="ds"><h5>Suggested angle</h5><div class="angle">${esc(l.angle?l.angle+' ':'')}${esc(l.pitch)}</div></div>
+ <div class="ds"><h5>Why this lead scored ${l.score}</h5><ul class="why">${l.why.map(w=>`<li>${esc(w)}</li>`).join('')}${l.mate?`<li>Same address as ${esc(l.mate)}</li>`:''}${l.excl?`<li><b>Filtered out:</b> ${esc(l.excl)}</li>`:''}</ul></div>
+ <div class="ds"><h5>Contact</h5>${esc(l.addr||'No address')}${l.city?', '+esc(l.city)+', NY '+esc(l.zip):''}<br>${l.phone?`<a href="tel:${esc(l.phone)}">${esc(l.phone)}</a>`:'No phone listed'}${o&&o.name?`<br>${esc(o.title||'Contact')}: <b>${esc(o.name)}</b>${o.phone?' · <a href="tel:'+esc(o.phone)+'">'+esc(o.phone)+'</a>':''}`:''}${l.lic?`<br>NY license ${esc(l.lic)}`:''}</div>
+ <div class="ds"><h5>Notes</h5><textarea id="note" placeholder="Call notes, who you spoke to, next step...">${esc(N[l.id]||'')}</textarea></div>
+ <div class="ds"><h5>Outreach email draft</h5><pre id="em">${esc(email(l))}</pre><button class="btn" data-act="copy">Copy email</button></div>
+ <div class="ds lnk">${/^https?:/.test(l.url||'')?`<a href="${esc(l.url)}" target="_blank" rel="noopener">Official record</a>`:''}<a href="https://www.google.com/search?q=${q(l.name+' '+l.city+' NY')}" target="_blank" rel="noopener">Google</a><a href="https://www.google.com/maps/search/${q((l.addr||l.name)+' '+l.city+' NY')}" target="_blank" rel="noopener">Map</a><a href="https://www.linkedin.com/search/results/all/?keywords=${q(l.name)}" target="_blank" rel="noopener">LinkedIn</a></div>`}
+function openLead(id){cur=L.find(l=>l.id===id);if(!cur)return;$('#drawer').innerHTML=drawer(cur);$('#drawer').classList.add('on');$('#scrim').classList.add('on');$('#drawer').scrollTop=0}
+function closeLead(){cur=null;$('#drawer').classList.remove('on');$('#scrim').classList.remove('on')}
+function csv(){const h=['Fit score','Tier','Name','Credential','Type','Specialty','Registered','Address','City','ZIP','Region','Phone','Contact','Contact title','Status','Notes','Why it fits','Record link'],q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const rows=view.map(l=>[l.score,l.tier,l.name,l.cred,l.tlabel,l.tax,l.date,l.addr,l.city,l.zip,l.region,l.phone,l.official?.name,l.official?.title,S[l.id]||'New',N[l.id],l.why.join('; '),l.url].map(q).join(','));
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([h.join(',')+'\n'+rows.join('\n')],{type:'text/csv'}));a.download='xybermed-ny-leads.csv';a.click()}
+function setStatus(k,t){const e=$('#status');e.className=k;e.style.display=t?'block':'none';e.innerHTML=t}
+function ingest(j){L=j.leads;prep();const m=j.meta||{};$('#demo').hidden=!m.demo;
+ $('#fresh').innerHTML=m.generated?`Updated ${esc(new Date(m.generated).toLocaleString())}<br>${L.length} records scanned`:'';
+ const opt=(a,all)=>`<option value="">${all}</option>`+[...new Set(a)].sort().map(r=>`<option>${esc(r)}</option>`).join('');
+ $('#region').innerHTML=opt(L.map(l=>l.region),'All of New York');$('#spec').innerHTML=opt(L.map(l=>l.spec),'All specialties');
+ const w=(m.warnings||[]).join(' | ');if(w)setStatus('err','<b>Some sources had problems:</b> '+esc(w));shown=48;render()}
+async function load(refresh){setStatus('','<span class="spin"></span>Fetching the latest government records. The first load can take up to a minute.');
+ try{const r=await fetch('/api/leads'+(refresh?'?refresh=1':''),{credentials:'same-origin'});
+  if(r.status===401){setStatus('','');return showLogin()}
+  const t=await r.text();let j;try{j=JSON.parse(t)}catch{throw new Error('Server returned '+r.status+' (probably a timeout). Reload in a minute.')}
+  if(!r.ok)throw new Error(j.error||'Error '+r.status);setStatus('','');ingest(j)}
+ catch(e){setStatus('err','<b>Live data failed:</b> '+esc(e.message)+' <button class="btn" onclick="load()" style="margin-left:8px;padding:3px 10px">Retry</button><br>Showing sample data meanwhile.');
+  try{ingest(await (await fetch('data/sample.json')).json())}catch{}}}
+function showLogin(){$('#app').hidden=true;$('#login').hidden=false;$('#u').focus()}
+function startApp(){$('#login').hidden=true;$('#app').hidden=false;load()}
+/*BOOT*/
+document.addEventListener('click',e=>{const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act,id=a.dataset.id;
+ if(act==='star'){e.stopPropagation();F[id]?delete F[id]:F[id]=1;store.set('xm-stars',F);render();if(cur&&cur.id===id){$('#drawer').innerHTML=drawer(cur)}return}
+ if(act==='open')return openLead(id);if(act==='close')return closeLead();
+ if(act==='tab'){st.tab=a.dataset.k;shown=48}
+ else if(act==='region'){st.region=st.region===a.dataset.r?'':a.dataset.r;$('#region').value=st.region}
+ else if(act==='kpi'){const k=a.dataset.k;if(k==='Hot'||k==='Warm'){st.tier=st.tier===k?'':k;$('#tier').value=st.tier}else st.tab=k==='practice'?'practice':'all'}
+ else if(act==='status'&&cur){S[cur.id]=a.dataset.s;store.set('xm-status',S);$('#drawer').innerHTML=drawer(cur)}
+ else if(act==='copy'){const t=$('#em').textContent;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).catch(()=>{const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();document.execCommand('copy');x.remove()});a.textContent='Copied';setTimeout(()=>a.textContent='Copy email',1500);return}
+ render()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLead();if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$('#q').focus()}
+ if(e.key==='Enter'&&e.target.classList.contains('card'))openLead(e.target.dataset.id)});
+$('#scrim').onclick=closeLead;
+document.addEventListener('input',e=>{if(e.target.id==='note'&&cur){N[cur.id]=e.target.value;store.set('xm-notes',N)}});
+[['q','q'],['days','days'],['spec','spec'],['region','region'],['tier','tier'],['sort','sort']].forEach(([i,k])=>$('#'+i).addEventListener('input',e=>{st[k]=k==='days'?+e.target.value:e.target.value;shown=48;render()}));
+[['indep','indep'],['showall','showAll'],['call','call']].forEach(([i,k])=>$('#'+i).addEventListener('change',e=>{st[k]=e.target.checked;shown=48;render()}));
+$('#view').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.v=b.dataset.v;[...$('#view').children].forEach(x=>x.setAttribute('aria-pressed',x===b));render()};
+$('#more').onclick=()=>{shown+=48;render()};$('#csv').onclick=csv;$('#refresh').onclick=()=>load(true);
+$('#logout').onclick=async()=>{try{await fetch('/api/session',{method:'DELETE'})}catch{}L=[];showLogin()};
+$('#lf').onsubmit=async e=>{e.preventDefault();$('#le').textContent='';
+ try{const r=await fetch('/api/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:$('#u').value.trim(),password:$('#p').value})});const j=await r.json().catch(()=>({}));
+  if(r.ok){$('#p').value='';startApp()}else $('#le').textContent=j.error||'Sign-in failed ('+r.status+')'}catch{$('#le').textContent='Could not reach the server.'}};
+fetch('/api/session',{credentials:'same-origin'}).then(r=>r.json()).then(j=>j.authed?startApp():showLogin()).catch(showLogin);
+</script></body></html>
